@@ -7,7 +7,7 @@ const settings = {
 	dimensions: [ 1080, 1080 ]
 };
 
-
+let agentPushed = 0 
 let manager;
 
 let text = 'A';
@@ -16,6 +16,53 @@ let fontFamily = 'serif';
 
 // const typeCanvas = document.createElement('canvas');
 document.addEventListener("DOMContentLoaded", function(event) { 
+
+const agents = [];
+
+class Agent {
+	constructor(x, y, fillStyle, cell) {
+		// this.pos = new Vector(x, y);
+		this.x=x;
+		this.y=y;
+		this.radius=cell;
+		this.fillStyle=fillStyle
+		this.vel = {x:random.range(-1, 1), y:random.range(-1, 1)};
+
+	}
+
+	bounce(width, height) {
+		if (this.pos.x <= 0 || this.pos.x >= width)  this.vel.x *= -1;
+		if (this.pos.y <= 0 || this.pos.y >= height) this.vel.y *= -1;
+	}
+
+	update() {
+		this.x += this.vel.x;
+		this.y += this.vel.y;
+	}
+
+	draw(context) {
+
+		// console.log(context)
+		// console.log("draw")
+		// console.log(this.y)
+		// console.log(this.x)
+		// console.log(this.fillStyle)
+		context.save();
+		context.fillStyle = this.fillStyle
+		context.translate(this.x, this.y);
+
+		// context.lineWidth = 4;
+
+		context.beginPath();
+		context.arc(0, 0, this.radius, 0, Math.PI * 2);
+		context.fill();
+		// context.stroke();
+
+		context.restore();
+	}
+}
+
+
 
 let typeCanvas=document.getElementById('canvas1');
 let canvas=document.getElementById('canvas2');
@@ -27,7 +74,7 @@ var video  = document.getElementById('video');
 
 
 video.addEventListener('play', function () {
-	console.log('mousedown')
+	// console.log('mousedown')
 	setInterval(() => {
 		
 	
@@ -37,31 +84,30 @@ video.addEventListener('play', function () {
 	const cell = 10;
 	const cols = Math.floor(width  / cell);
 	const rows = Math.floor(height / cell);
-	const numCells = cols * rows;
+	const numCells = cols * width;
   
         typeContext.drawImage($this, 0, 0);
 		var typeData = typeContext.getImageData(0, 0, width, height).data;
-		console.log(typeData)
+		// console.log(typeData)
 		context.fillStyle = 'black';
 		context.fillRect(0, 0, width, height);
 
 		context.textBaseline = 'middle';
 		context.textAlign = 'center';
 
-
 		// context.drawImage(typeCanvas, 0, 0);
 		for (let i = 0; i < numCells; i++) {
+
 			const col = i % cols;
 			const row = Math.floor(i / cols);
 
 			const x = col * cell;
-			const y = row * cell
+			const y = row
 
 			const r = typeData[i * cell * 4 + 0];
 			const g = typeData[i * cell* 4 + 1];
 			const b = typeData[i * cell* 4 + 2];
 			const a = typeData[i * cell* 4 + 3];
-			context.fillStyle = 'rgb('+r+','+g+','+b+')';
 // context.fillStyle = 'rgb(0,0,'+b+')';
 			// const glyph = getGlyph(r);
 
@@ -70,32 +116,45 @@ video.addEventListener('play', function () {
 
 			// context.fillStyle = 'white';
 
-			context.save();
-			context.translate(x, y);
-			context.translate(cell, cell);
+
+
+			agents.push(new Agent(x, y,'rgb('+r+','+g+','+b+')', cell ))
+			agentPushed++;
+			// context.fillStyle = 'rgb('+r+','+g+','+b+')';
+
+			// context.save();
+			// context.translate(x, y);
+			// context.translate(cell, cell);
 
 			// context.fillRect(0, 0, cell, cell);
 
 			// context.fillText(glyph, 0, 0);
 
-			context.beginPath();
-			context.arc(0,0, cell, 0, Math.PI*2)
-			context.fill();
+			// context.beginPath();
+			// context.arc(0,0, cell, 0, Math.PI*2)
+			// context.fill();
 			
-			context.restore();
+			// context.restore();
 
 
 		}
+		if(agentPushed>=numCells-5){
+			// console.log('agentspushed')
+			// console.log(agents)
+				agents.forEach(agent=>{
+
+			agent.draw(context);})
+
+
+	}
+
 
 
 		
 
-}, 200);
+}, 5000);
 
 })
-
-
-
 
 
 
@@ -217,31 +276,93 @@ const sketch = ({ context, width, height }) => {
 	// };
 };
 
-const getGlyph = (v) => {
-	if (v < 50) return '';
-	if (v < 100) return '.';
-	if (v < 150) return '-';
-	if (v < 200) return '+';
+// const getGlyph = (v) => {
+// 	if (v < 50) return '';
+// 	if (v < 100) return '.';
+// 	if (v < 150) return '-';
+// 	if (v < 200) return '+';
 
-	const glyphs = '_= /'.split('');
+// 	const glyphs = '_= /'.split('');
 
-	return random.pick(glyphs);
-};
-
-
-const onKeyUp = (e) => {
-	text = e.key.toUpperCase();
-	manager.render();
-};
-
-document.addEventListener('keyup', onKeyUp);
+// 	return random.pick(glyphs);
+// };
 
 
-const start = async () => {
-	manager = await canvasSketch(sketch, settings);
-};
+// const onKeyUp = (e) => {
+// 	text = e.key.toUpperCase();
+// 	manager.render();
+// };
+dotsmove = 'off'
+const canvasClick = ()=>{
+console.log('canvas click')
 
-start();
+dotsmove ='on'
+
+}
+canvas.addEventListener('mousedown', canvasClick);
+
+
+
+function startAnimating(fps) {
+    fpsInterval = 1000 / fps;
+    then = Date.now();
+    startTime = then;
+    tick();
+}
+
+const tick = () =>{
+// console.log('tick')
+if(agents.length>0&&dotsmove=='on'){
+context.clearRect(0, 0, canvas.width, canvas.height);
+for(let i = 0; i<agents.length;i++){
+// const agent = agents[i];
+// for(let j = 0; j<agents.length;j++){
+// const other = agents[j]
+// const dist = agent.getDistance(other.pos);
+//  context.lineWidth = 0.1;
+// console.log("dist")
+// console.log(dist)
+// if(dist<300){
+// context.beginPath();
+// context.moveTo(agent.pos.x, agent.pos.y)
+// context.lineTo(other.pos.x, other.pos.y);
+// context.stroke();
+// }
+// }
+// console.log("agent")
+agents[i].update()
+agents[i].draw(context)
+// agent.bounce(1000, 1000)
+
+
+}
+}
+     window.requestAnimationFrame(tick)
+
+    now = Date.now();
+    elapsed = now - then;
+
+    // if enough time has elapsed, draw the next frame
+
+    if (elapsed > fpsInterval) {
+
+        // Get ready for next frame by setting then=now, but also adjust for your
+        // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
+        then = now - (elapsed % fpsInterval);
+   
+    
+}
+}
+
+startAnimating(5)
+// document.addEventListener('keyup', onKeyUp);
+
+
+// const start = async () => {
+// 	manager = await canvasSketch(sketch, settings);
+// };
+
+// start();
 
 // function getMyVideo() {
 //   var canvas = document.getElementById('canvas');
@@ -283,4 +404,5 @@ start();
 
 })
 // start();
+
 
