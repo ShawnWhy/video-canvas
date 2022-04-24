@@ -24,7 +24,7 @@ let inputStrings = []
 let glyphs = '_= /'.split('');
 let videoWidth;
 let videoHeight;
-let videoChoice = "pedler"
+let videoChoice = "troika"
 // glyphs.push("Ukrain")
 
 
@@ -402,23 +402,46 @@ shape = selectFilter.value;
 
 
 
-const loadVideo= function(url){
-
+const loadVideo= function(){
 video  = document.getElementById('video');
 switch(videoChoice){
 case "troika":
 video.src = "./troika.mp4"
 break;
-
 case "pedler":
 video.src="./koro.mp4"
 }
-// console.log(video)
-
-
 }
 
 loadVideo()
+
+const selectVideo = document.getElementById('videoSelect')
+function changeVideo(){
+console.log(selectVideo.value)
+videoChoice=selectVideo.value;
+loadVideo()
+setTimeout(() => {
+	
+
+if ( video.readyState === 4 ){
+var videoWidth = video.videoWidth;
+var videoHeight = video.videoHeight;
+// console.log(videoHeight)
+var typeCanvasHeight = videoHeight/cell;
+var typeCanvasWidth = videoWidth/cell
+// console.log(typeCanvasHeight)
+// console.log(typeCanvasWidth)
+typeCanvas.width = typeCanvasWidth;
+typeCanvas.height = typeCanvasHeight;
+canvas.height = videoHeight;
+canvas.width= videoWidth;
+clearInterval(movieInterval);
+generateFilter(video)
+}
+}, 50);
+}
+selectVideo.addEventListener('change', ()=>{changeVideo()})
+
 // selectVideos.addEventListener('change', loadVideo())
 
 const wordsInputForm = document.getElementById('inputWordsForm')
@@ -431,15 +454,12 @@ e.stopPropagation();
 addWords()})
 
 function addWords(){
-
-
 var word = wordsInput.value;
 console.log(wordsInput.value)
 if(word.length<20){
 inputStrings.push(word)
 glyphs=glyphs.concat(inputStrings)
 console.log(glyphs)
-
 };
 }
 

@@ -4,18 +4,56 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Das boot</title>
-<script defer src="main.69bb830594b6cee8767c.js"></script></head>
+    <title>Video Canvas</title>
+
+<script defer src="main.8c12b70c12728e434060.js"></script></head>
 <body>
-    <video id="video" src="./butt.mp4" controls="false"></video>
+<div id="controls">
+<div>
+<form id="inputWordsForm">
+  <label for="inputWords">words to to put into the video</label>
+  <input type="text" id="inputWords" name="inputWords"><br><br>
+  <input type="submit" value="Submit">
+</form>
+</div>
+<div>
+<label for="pixleSize">what size would you like the pixles to be:</label>
+<select name="pixleSize" id="sizeSelect">
+  <option value="5">5</option>
+  <option value="10">10</option>
+  <option value="20">20</option>
+  <option value="40">40</option>
+</select> 
+</div>
+<div>
+ <label for="filter">choose a style:</label>
 
-  <canvas id="canvas2" height="1200" width="1200"
+<select name="filter" id="filterSelect">
+  <option value="circles">circles</option>
+  <option value="squares">squares</option>
+  <option value="rumbus">rumbus</option>
+  <option value="words">words</option>
+</select> 
+</div>
+<div>
+ <label for="video">choose a video:</label>
+
+<select name="video" id="videoSelect">
+  <option value="pedler">Peddler</option>
+  <option value="troika">Troika</option>
+</select> 
+</div>
+</div>
+    <video id="video" src="./troika.mp4" controls="false"></video>
+
+      <canvas id="canvas2" height="600" width="300"
 ></canvas>
 
-    <canvas id="canvas1" height="1200" width="1200"
+    <canvas id="canvas1" height="600" style="display:none"
 ></canvas>
 
-    <h1>Das boot</h1>
+    
+    
 
 
 <script></script>
