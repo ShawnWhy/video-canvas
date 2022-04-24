@@ -2,6 +2,8 @@ const canvasSketch = require('canvas-sketch');
 const random = require('canvas-sketch-util/random');
 const load = require('load-asset');
 import style from './main.css'
+import koro from './koro.mp4'
+import troika from './troika.mp4'
 // const { ContextReplacementPlugin } = require('webpack');
 let fpsInterval;
 let then;
@@ -24,7 +26,7 @@ let inputStrings = []
 let glyphs = '_= /'.split('');
 let videoWidth;
 let videoHeight;
-let videoChoice = "troika"
+let videoChoice = "pedler"
 // glyphs.push("Ukrain")
 
 
@@ -406,10 +408,10 @@ const loadVideo= function(){
 video  = document.getElementById('video');
 switch(videoChoice){
 case "troika":
-video.src = "../src/troika.mp4"
+video.src = troika
 break;
 case "pedler":
-video.src="../src/koro.mp4"
+video.src= koro
 }
 }
 
