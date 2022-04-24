@@ -406,10 +406,10 @@ const loadVideo= function(){
 video  = document.getElementById('video');
 switch(videoChoice){
 case "troika":
-video.src = "./troika.mp4"
+video.src = "../src/troika.mp4"
 break;
 case "pedler":
-video.src="./koro.mp4"
+video.src="../src/koro.mp4"
 }
 }
 
